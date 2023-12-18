@@ -10,11 +10,12 @@ import requests
 import json
 import imutils
 import sys
+from json.decoder import JSONDecodeError
 
 #--------- Change to your needs---------------
-BASE_API_URL='http://localhost:5000/api/v1' 
-USER='pp' 
-PASSWORD='abc123' 
+BASE_API_URL='http://localhost:8088/api/v1' 
+USER='zmuser' 
+PASSWORD='zmpass' 
 FRAME_SKIP = 5 
 
 # if you want face 
@@ -44,7 +45,20 @@ auth_header = None
 r = requests.post(url=BASE_API_URL+'/login', 
                   data=json.dumps({'username':USER, 'password':PASSWORD}), 
                   headers={'content-type': 'application/json'})
-data = r.json()
+try:
+    r.raise_for_status()
+except Exception:
+    sys.stderr.write(
+        f'ERROR: Request to {BASE_API_URL}/login returned '
+        f'HTTP {r.status_code}: {r.content}\n'
+    )
+    raise
+try:
+    data = r.json()
+except (requests.exceptions.JSONDecodeError, JSONDecodeError):
+    sys.stderr.write(f'ERROR Decoding response content as JSON: {r.content}\n')
+    raise
+
 access_token = data.get('access_token')
 if not access_token:
   print (data)
@@ -60,8 +74,7 @@ def draw_boxes(frame,data):
   color = (0,255,0) # bgr
   for item in data:
      bbox = item.get('box')
-     label = item.get('type')
-     
+     label = f'{item["label"]} {item["confidence"]}'
      cv2.rectangle(frame, (bbox[0],bbox[1]), (bbox[2],bbox[3]), color, 2)
      cv2.putText(frame, label, (bbox[0],bbox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
@@ -88,13 +101,26 @@ while video_source.isOpened():
     if frame_cnt % FRAME_SKIP:
       continue
 
-    frame_cnt = 0
     # The API expects non-raw images, so lets convert to jpg
     ret, jpeg = cv2.imencode('.jpg', frame)
     # filename is important because the API checks filename type
     files = {'file': ('image.jpg', jpeg.tobytes())}
     r = requests.post(url=object_url, headers=auth_header,params=PARAMS,files=files)
-    data = r.json()
+    try:
+        r.raise_for_status()
+    except Exception:
+        sys.stderr.write(
+            f'ERROR: Request to {object_url} returned '
+            f'HTTP {r.status_code}: {r.content}\n'
+        )
+        raise
+    try:
+        data = r.json()
+    except (requests.exceptions.JSONDecodeError, JSONDecodeError):
+        sys.stderr.write(f'ERROR Decoding response content as JSON: {r.content}\n')
+        raise
+
+    print(f'Frame {frame_cnt} result: {data}')
     f = draw_boxes(frame,data)
 
     cv2.imshow('Object detection via MLAPI', frame)

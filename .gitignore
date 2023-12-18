@@ -1,3 +1,4 @@
 mlapiconfig.ini
 testvideo.mp4
-mlapi
+data/
+venv/

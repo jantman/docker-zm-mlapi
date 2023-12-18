@@ -12,3 +12,4 @@ services:
     volumes:
       - ./data:/var/lib/zmeventnotification
       - ./mlapiconfig.EXAMPLE.ini:/etc/mlapiconfig.ini
+      - ./secrets.EXAMPLE.ini:/etc/secrets.ini
