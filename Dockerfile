@@ -26,7 +26,11 @@ RUN apt update \
 # @TODO replace python3-opencv above with OpenCV > 4.3 with GPU support
 
 # mlapi installation
-RUN git clone https://github.com/ZoneMinder/mlapi.git /mlapi \
+RUN git clone https://github.com/jantman/pyzm.git /pyzm \
+    && cd /pyzm \
+    && git checkout jantman \
+    && pip install --break-system-packahes . \
+    && git clone https://github.com/ZoneMinder/mlapi.git /mlapi \
     && cd /mlapi \
     && git checkout $MLAPI_REF \
     && pip install --break-system-packages -r requirements.txt \
