@@ -29,7 +29,7 @@ RUN apt update \
 RUN git clone https://github.com/jantman/pyzm.git /pyzm \
     && cd /pyzm \
     && git checkout jantman \
-    && pip install --break-system-packahes . \
+    && pip install --break-system-packages . \
     && git clone https://github.com/ZoneMinder/mlapi.git /mlapi \
     && cd /mlapi \
     && git checkout $MLAPI_REF \
