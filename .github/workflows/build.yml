@@ -32,5 +32,5 @@ jobs:
             org.opencontainers.image.version=${{ github.ref_name }}
             org.opencontainers.image.revision=${{ github.sha }}
           tags: |
-            ${{ github.repository }}:${{ github.ref_name }}-${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-${{ github.sha }}
+            ${{ github.repository }}:${{ github.ref_name }}-build${{ github.run_id }}-${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-build${{ github.run_id }}-${{ github.sha }}
