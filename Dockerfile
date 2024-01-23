@@ -5,7 +5,7 @@ FROM debian:12.2
 ENV TZ=America/New_York
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG MLAPI_REF=0eb66e657e51e26a4423a6dbd36890eab6162006
+ARG MLAPI_REF=jantman
 
 # dependency installation
 RUN apt update \
@@ -30,7 +30,7 @@ RUN git clone https://github.com/jantman/pyzm.git /pyzm \
     && cd /pyzm \
     && git checkout jantman \
     && pip install --break-system-packages . \
-    && git clone https://github.com/ZoneMinder/mlapi.git /mlapi \
+    && git clone https://github.com/jantman/mlapi.git /mlapi \
     && cd /mlapi \
     && git checkout $MLAPI_REF \
     && pip install --break-system-packages -r requirements.txt \
