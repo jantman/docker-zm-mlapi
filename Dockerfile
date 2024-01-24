@@ -5,7 +5,8 @@ FROM debian:12.2
 ENV TZ=America/New_York
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG MLAPI_REF=jantman
+ARG MLAPI_REF=6b68dc15cc66b1fc20a587872369793dcf676fee
+ARG PYZM_REF=d5925e56e1e8c78053914ef586d394f053fd50e5
 
 # dependency installation
 RUN apt update \
@@ -26,11 +27,11 @@ RUN apt update \
 # @TODO replace python3-opencv above with OpenCV > 4.3 with GPU support
 
 # mlapi installation
-RUN git clone https://github.com/jantman/pyzm.git /pyzm \
+RUN git clone https://github.com/ZoneMinder/pyzm.git /pyzm \
     && cd /pyzm \
-    && git checkout jantman \
+    && git checkout $PYZM_REF \
     && pip install --break-system-packages . \
-    && git clone https://github.com/jantman/mlapi.git /mlapi \
+    && git clone https://github.com/ZoneMinder/mlapi.git /mlapi \
     && cd /mlapi \
     && git checkout $MLAPI_REF \
     && pip install --break-system-packages -r requirements.txt \
